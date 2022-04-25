@@ -3,6 +3,9 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
+# TODO: this needs considerable optimisation and legibility improvements
+# TODO: calculating mean/average triggered bugs if >1 runs
+
 class Run():
     def __init__(self, fuzzer, target, program, run, reached, triggered):
         self.fuzzer = fuzzer
@@ -37,7 +40,7 @@ def load_runs(json_path):
     return loaded_runs
 
 def generate_bugplot(runs):
-    "Triggered vs target"
+    """Triggered vs target"""
     
     ##########################
     # Calculate what to plot #
@@ -65,8 +68,7 @@ def generate_bugplot(runs):
 
     data_to_plot = {}
     for target in targets:
-        this_target = {}
-        
+        this_target = {}    
         for i in targets[target]:  # loop through all the runs against this target, with any fuzzer
             fuzzer = runs[i].fuzzer
             if fuzzer not in this_target:
@@ -74,7 +76,6 @@ def generate_bugplot(runs):
             triggered = len(runs[i].triggered)
             this_target[fuzzer] = (this_target[fuzzer] + triggered)
         data_to_plot[target] = this_target
-    print(data_to_plot)
 
     width = 0.85 / len(fuzzers)
     
@@ -82,30 +83,18 @@ def generate_bugplot(runs):
     # Create the plot #
     ###################    
     fig, ax = plt.subplots()
-
-    for target in targets:
-        print(targets[target])
-        for j,i in enumerate(targets[target]):
-            print(j)
-            print(runs[i])
-            print("")
-
-
+              
+    ax.set_xticks(range(1,len(targets)+1), targets.keys())
+    ax.set_title("Mean number of bugs found for each target library")
+    ax.set_xlabel("Targets")
+    ax.set_ylabel("Number of bugs triggered")
+    leg = ax.legend(loc="upper left", bbox_to_anchor=(1.04, 1.0))
     
-    # x = [1,2,3,4,5]
-    # y = [1,2,3,4,5]
-    # ax.plot(x, y, label="bello")
-    
-    # ax.set_xticks(range(1,len(targets)+1), targets.keys())
-    # ax.set_title("Mean number of bugs found for each target library")
-    # ax.set_xlabel("Targets")
-    # ax.set_ylabel("Number of bugs triggered")
-    # leg = ax.legend(loc="upper left", bbox_to_anchor=(1.04, 1.0))
-    
-    # plt.savefig('bugplot.png', bbox_inches="tight")
+    plt.savefig('bugplot.png', bbox_inches="tight")
 
 
 def generate_sigplot(runs):
+    raise NotImplementedError("Sigplot not yet implemented, sorry!")
     pass
 
 
